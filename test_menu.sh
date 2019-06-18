@@ -12,7 +12,7 @@ echo "4:new file"
 echo "5:morefile"
 echo "6:git push"
 echo "7:mysql-->bookhero-->tb_books"
-
+echo "8:sendmail"
 echo "15:reboot"
 echo "others:shutdown"
 echo "0:exit"
@@ -53,6 +53,10 @@ echo -e "\033[36m  git push `pwd` \033[0m"
 elif [ "$OPTION" = "7" ];then
     echo "mysqsl-->bookhero-->tb_books"
     ./source/my_sql.sh
+
+elif [ "$OPTION" = "8" ];then
+    echo -e "\033[33m sendmail \033[0m" 
+    ./source/sendEmail_1.py
 
 elif [ "$OPTION" = "15" ];then
     sudo reboot

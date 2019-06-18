@@ -2,7 +2,9 @@
 while true
 do
 
-echo "======v1.0====="
+
+echo -e "\033[36m ======v1.0===== \033[0m" 
+
 echo "1:start"
 echo "2:test_1.sh"
 echo "3:all.sh"
@@ -14,8 +16,9 @@ echo "7:mysql-->bookhero-->tb_books"
 echo "15:reboot"
 echo "others:shutdown"
 echo "0:exit"
-echo "=============="
 
+
+echo -e "\033[36m ============== \033[0m" 
 
 read -p "Please input option:" OPTION
 
@@ -44,7 +47,7 @@ read -p "Input filename:" Filename
    echo "ok--$Filename"  
 
 elif [ "$OPTION" = "6" ];then
-    echo "git push `pwd`"
+echo -e "\033[36m  git push `pwd` \033[0m" 
     ./use_git.sh
 
 elif [ "$OPTION" = "7" ];then
@@ -55,7 +58,7 @@ elif [ "$OPTION" = "15" ];then
     sudo reboot
 
 elif [ "$OPTION" = "0" ];then
-    echo "exit!!"
+echo -e "\033[47;30m  exit \033[0m" 
     break
 
 else

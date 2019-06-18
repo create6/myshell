@@ -1,11 +1,13 @@
 #!/bin/bash
 
-#cd ~/Desktop/book_hero/
-#./use_git.sh
 
-~/Desktop/myshell/test_1.sh
+echo "git book_hero"
+cd ~/Desktop/book_hero/
+./use_git.sh
 
-./test_menu.sh
+#~/Desktop/myshell/test_1.sh
+
+#./test_menu.sh
 pwd
 
 

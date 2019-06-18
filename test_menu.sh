@@ -2,6 +2,7 @@
 while true
 do
 
+echo "======v1.0====="
 echo "1:start"
 echo "2:test_1.sh"
 echo "3:all.sh"
@@ -12,7 +13,10 @@ echo "7:mysql-->bookhero-->tb_books"
 
 echo "15:reboot"
 echo "others:shutdown"
-echo "16:exit"
+echo "0:exit"
+echo "=============="
+
+
 read -p "Please input option:" OPTION
 
 
@@ -49,7 +53,9 @@ elif [ "$OPTION" = "7" ];then
 
 elif [ "$OPTION" = "15" ];then
     sudo reboot
-elif [ "$OPTION" = "16" ];then
+
+elif [ "$OPTION" = "0" ];then
+    echo "exit!!"
     break
 
 else

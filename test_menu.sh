@@ -48,11 +48,11 @@ read -p "Input filename:" Filename
 
 elif [ "$OPTION" = "6" ];then
 echo -e "\033[36m  git push `pwd` \033[0m" 
-    ./use_git.sh
+    ~/Desktop/myshell/use_git.sh
 
 elif [ "$OPTION" = "7" ];then
     echo "mysqsl-->bookhero-->tb_books"
-    ./source/my_sql.sh
+    ~/Desktop/myshell/source/my_sql.sh
 
 elif [ "$OPTION" = "8" ];then
     echo -e "\033[33m sendmail \033[0m" 

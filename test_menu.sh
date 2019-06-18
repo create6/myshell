@@ -5,6 +5,8 @@ echo "3:all.sh"
 echo "4:new file"
 echo "5:morefile"
 echo "6:git push"
+echo "7:mysql-->bookhero-->tb_books"
+
 echo "15:reboot"
 echo "others:shutdown"
 
@@ -35,6 +37,10 @@ read -p "Input filename:" Filename
 elif [ "$OPTION" = "6" ];then
     echo "git push `pwd`"
     ./use_git.sh
+
+elif [ "$OPTION" = "7" ];then
+    echo "mysqsl-->bookhero-->tb_books"
+    ./source/my_sql.sh
 
 elif [ "$OPTION" = "15" ];then
     sudo reboot

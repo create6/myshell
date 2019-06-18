@@ -62,8 +62,12 @@ echo -e "\033[47;30m  exit \033[0m"
     break
 
 else
+    ./all.sh
+    cd ~/Desktop/myshell
+    ./use_git.sh
     echo "shutdown"
-   sudo shutdown -h now
+    
+    sudo shutdown -h now
 fi
 
 

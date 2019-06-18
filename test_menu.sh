@@ -33,6 +33,7 @@ read -p "Input filename:" Filename
    echo "ok--$Filename"  
 
 elif [ "$OPTION" = "6" ];then
+    echo "git push `pwd`"
     ./use_git.sh
 
 elif [ "$OPTION" = "15" ];then

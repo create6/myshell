@@ -1,4 +1,7 @@
 #!/bin/bash
+while true
+do
+
 echo "1:start"
 echo "2:test_1.sh"
 echo "3:all.sh"
@@ -9,8 +12,10 @@ echo "7:mysql-->bookhero-->tb_books"
 
 echo "15:reboot"
 echo "others:shutdown"
-
+echo "16:exit"
 read -p "Please input option:" OPTION
+
+
 
 if [ "$OPTION" = "1" ];then
     echo "start"
@@ -44,13 +49,15 @@ elif [ "$OPTION" = "7" ];then
 
 elif [ "$OPTION" = "15" ];then
     sudo reboot
+elif [ "$OPTION" = "16" ];then
+    break
+
 else
     echo "shutdown"
    sudo shutdown -h now
 fi
-exit 0
 
 
-
+done
 
 

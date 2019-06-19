@@ -2,8 +2,8 @@
 
 mysql -uroot -pmysql <<-EOF
 
-#/usr/bin/mysql <<-EOF
 use bookhero;
 select *from tb_books \G;
+select *from tb_heros \G;
 
 EOF

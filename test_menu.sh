@@ -10,7 +10,7 @@ echo "2:test_1.sh"
 echo "3:get_bookhero"
 echo "4:new file"
 echo "5:morefile"
-echo "6:git push"
+echo "6:git myshell"
 echo "7:mysql-->bookhero"
 echo "8:sendmail"
 echo "15:reboot"
@@ -20,6 +20,7 @@ echo "0:exit"
 
 echo -e "\033[36m ============== \033[0m" 
 
+cd ~/Desktop/myshell
 read -p "Please input option:" OPTION
 
 

@@ -15,6 +15,7 @@ echo "7:mysql-->bookhero"
 echo "8:sendmail"
 echo "15:reboot"
 echo "112:shutdown"
+echo "99:edit it"
 echo "0:exit"
 
 
@@ -62,7 +63,9 @@ elif [ "$OPTION" = "8" ];then
 
 elif [ "$OPTION" = "15" ];then
     sudo reboot
+elif [ "$OPTION" = "99" ];then
 
+    vi ./test_menu.sh
 elif [ "$OPTION" = "0" ];then
 echo -e "\033[47;30m  exit \033[0m" 
     break

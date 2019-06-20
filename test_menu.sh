@@ -21,7 +21,6 @@ echo "0:exit"
 echo -e "\033[36m ============== \033[0m" 
 
 cd ~/Desktop/myshell
-read -p "Please input option:" OPTION
 
 
 
@@ -57,8 +56,9 @@ elif [ "$OPTION" = "7" ];then
     ~/Desktop/myshell/source/my_sql.sh
 
 elif [ "$OPTION" = "8" ];then
+    read -p 'Please input content:' CONTENT
     echo -e "\033[33m sendmail \033[0m" 
-    ./source/sendEmail_1.py
+    ./source/sendEmail_1.py $CONTENT
 
 elif [ "$OPTION" = "15" ];then
     sudo reboot

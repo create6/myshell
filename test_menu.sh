@@ -14,14 +14,14 @@ echo "6:git myshell"
 echo "7:mysql-->bookhero"
 echo "8:sendmail"
 echo "15:reboot"
-echo "others:shutdown"
+echo "112:shutdown"
 echo "0:exit"
 
 
 echo -e "\033[36m ============== \033[0m" 
 
 cd ~/Desktop/myshell
-
+read -p "Please input option:" OPTION
 
 
 if [ "$OPTION" = "1" ];then
@@ -67,13 +67,18 @@ elif [ "$OPTION" = "0" ];then
 echo -e "\033[47;30m  exit \033[0m" 
     break
 
-else
-    ./all.sh
-    cd ~/Desktop/myshell
-    ./use_git.sh
-    echo "shutdown"
+elif [ "$OPTION" = "112" ];then
     
+  cd ~/Desktop/myshell
+  ./all.sh
+  ./use_git.sh
+    echo "shutdown"
     sudo shutdown -h now
+
+else
+  
+ #  sudo shutdown -h now
+    echo '=='
 fi
 
 

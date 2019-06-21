@@ -8,7 +8,7 @@ echo -e "\033[36m ======v1.0===== \033[0m"
 echo "1:start"
 echo "2:test_1.sh"
 echo "3:get_bookpro"
-echo "4:new file"
+echo "4:show date"
 echo "5:morefile"
 echo "6:git myshell"
 echo "7:mysql-->bookhero"
@@ -36,12 +36,10 @@ elif [ "$OPTION" = "3" ];then
     ./use_git.sh
 
 elif [ "$OPTION" = "4" ];then
-    cd ~/Desktop/myshell/source/
-    touch 1.sh
-    chmod +x 1.sh
+	echo $(date)
 
 elif [ "$OPTION" = "5" ];then
-    cd ~/Desktop/myshell/source/
+    cd ~/Desktop/myshell/
 read -p "Input filename:" Filename
    # read Filename
     touch $Filename

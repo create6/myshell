@@ -12,13 +12,16 @@ try:
     print('收件箱：%s'%ret)
     
 except Exception:
-    print('邮箱输入有误，默认发送至1362254116@qq.com')
+    print('默认发送至1362254116@qq.com')
     username_recv = '1362254116@qq.com'#收件人，多个收件人用逗号隔开
-    content_send=str(sys.argv[1:])
+    #content_send=str(sys.argv[1:])
+    content_list=sys.argv[1:]
+    
+    content_send=''
+    for each in content_list:
+    	content_send +=each + ' '
     print('发送内容：%s'%content_send)
-    # for each in :
-	   #  content_send +=each
-	# print('发送内容：%s'%content_send)
+
     
 else:
 	username_recv=ret
@@ -44,4 +47,4 @@ smtp = smtplib.SMTP(mailserver,port=25) # 连接邮箱服务器，smtp的端口�
 smtp.login(username_send,password)  #登录邮箱
 smtp.sendmail(username_send,username_recv,mail.as_string())# 参数分别是发送者，接收者，第三个是把上面的发送邮件的内容变成字符串
 smtp.quit() # 发送完毕后退出smtp
-print ('success')
+print ('Send Success')

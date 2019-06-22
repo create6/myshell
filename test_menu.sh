@@ -15,6 +15,7 @@ echo "7:mysql-->bookhero"
 echo "8:sendmail"
 echo "15:reboot"
 echo "112:shutdown"
+echo "111:T-shutdown"
 echo "99:edit it"
 echo "0:exit"
 
@@ -74,6 +75,11 @@ elif [ "$OPTION" = "112" ];then
   ./all.sh
   ./use_git.sh
     echo "shutdown"
+    sudo shutdown -h now
+
+elif [ "$OPTION" = "111" ];then
+    
+    echo "T-shutdown"
     sudo shutdown -h now
 
 else

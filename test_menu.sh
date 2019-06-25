@@ -7,7 +7,7 @@ echo -e "\033[36m ======v1.0===== \033[0m"
 
 echo "1:start"
 echo "2:test_1.sh"
-echo "3:get_bookpro"
+echo "3:get_meiduo"
 echo "4:show date"
 echo "5:morefile"
 echo "6:git myshell"
@@ -33,7 +33,7 @@ elif [ "$OPTION" = "2" ];then
     ./test_1.sh
 
 elif [ "$OPTION" = "3" ];then
-    cd ~/Desktop/bookpro/
+    cd ~/Desktop/meiduo/meiduo_ub/
     ./use_git.sh
 
 elif [ "$OPTION" = "4" ];then

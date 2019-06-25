@@ -19,10 +19,10 @@
 -- Table structure for table `auth_group`
 --
 
-DROP TABLE IF EXISTS `auth_group`;
 
 create database bookhero charset=utf8;
 use bookhero;
+DROP TABLE IF EXISTS `auth_group`;
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

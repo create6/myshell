@@ -59,8 +59,8 @@ try:
     print('收件箱：%s'%ret)
 
 except Exception:
-    print('默认发送至1362254116@qq.com')
-    username_recv = '1362254116@qq.com'#收件人，多个收件人用逗号隔开
+    print('默认发送至1416827190@qq.com')
+    username_recv = '1416827190@qq.com'#收件人，多个收件人用逗号隔开
     #content_send=str(sys.argv[1:])
     content_list = sys.argv[1:]
 

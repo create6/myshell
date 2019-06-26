@@ -13,29 +13,46 @@ import pymysql
 def mysentence():
     conn1 = pymysql.connect(host="localhost", port=3306, user="root",
                             password="mysql", database="aphorism",charset="utf8")
-    c_id=random.randint(1,8)
+
+    #cs =conn1.cu
+    
+    c_id=random.randint(1,147)
+
+
     # print(c_id)
     # c_sql="select *from tb_aphorism where id=%d"%c_id
     cs = conn1.cursor()
     sql = "select *from tb_aphorism where id=%d;"%c_id
     # sql = "select *from tb_aphorism where id=2;"
+    sql0="select count(*) from tb_aphorism;"
     cs.execute(sql)
+    
     data = cs.fetchall()  # 是一个元组
     # data1 = cs.fetchone()
+    cs.execute(sql0)
+    data0=cs.fetchall()
+    
+    
     cs.close()
     conn1.close()
     # print(data)#((1, '无风不起浪 (There is no smoke without fire）'),)
     # print(data[0][1])
+    print(data0[0][0])
     return data[0][1]
 
 
 str0=mysentence()
-# print(str0)
+print('str0-->%s'%str0)
+
 # str2 =sys.argv.append(str0)
 # print('str2:%s'%str2)
 
-str1=str(sys.argv[1])
+try:
+    str1=str(sys.argv[1])
+except Exception:
+    print("未输入内容")
 
+#重写设计结构！！else:
 
 try:
     ret = re.match("[a-zA-Z0-9_-]{4,20}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+",str1).group()

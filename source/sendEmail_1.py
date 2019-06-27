@@ -16,28 +16,37 @@ def mysentence():
 
     #cs =conn1.cu
     
-    c_id=random.randint(1,147)
+    #数据库操作1
+    cs = conn1.cursor()
+    #获取表格行数
+    sql0="select count(*) from tb_aphorism;"
+    cs.execute(sql0)
+    data0=cs.fetchall()
+    #行数
+    c_raw = data0[0][0]
+    #随机数，1至c_raw
+    c_id=random.randint(1,c_raw)
 
+    
 
     # print(c_id)
     # c_sql="select *from tb_aphorism where id=%d"%c_id
     cs = conn1.cursor()
     sql = "select *from tb_aphorism where id=%d;"%c_id
     # sql = "select *from tb_aphorism where id=2;"
-    sql0="select count(*) from tb_aphorism;"
+    
     cs.execute(sql)
     
     data = cs.fetchall()  # 是一个元组
     # data1 = cs.fetchone()
-    cs.execute(sql0)
-    data0=cs.fetchall()
+    
     
     
     cs.close()
     conn1.close()
     # print(data)#((1, '无风不起浪 (There is no smoke without fire）'),)
     # print(data[0][1])
-    print(data0[0][0])
+    
     return data[0][1]
 
 

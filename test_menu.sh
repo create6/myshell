@@ -13,6 +13,7 @@ echo "5:morefile"
 echo "6:git myshell"
 echo "7:mysql-->bookhero"
 echo "8:sendmail"
+echo "9:mysql-->meiduo12"
 echo "15:reboot"
 echo "112:shutdown"
 echo "111:T-shutdown"
@@ -59,6 +60,13 @@ elif [ "$OPTION" = "8" ];then
     read -p 'Please input content:' CONTENT
     echo -e "\033[33m sendmail \033[0m" 
     ./source/sendEmail_1.py $CONTENT
+elif [ "$OPTION" = "9" ];then
+    
+    echo -e "\033[33m code:404 \033[0m" 
+#    mysql -uroot -pmysql <<EOF
+#    use meiduo12;
+#    show tables;
+#    EOF
 
 elif [ "$OPTION" = "15" ];then
     sudo reboot

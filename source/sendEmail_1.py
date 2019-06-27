@@ -75,7 +75,7 @@ print('发送内容：%s' % content_send)
 
 
 #发送邮件：
-def sendEmail(content_send,username_recv)
+def sendEmail(content_send,username_recv):
     mailserver = "smtp.126.com"  #邮箱服务器地址
     username_send = 'create6@126.com'  #邮箱用户名
     password = 'bolsu3306'   #邮箱密码：需要使用授权码

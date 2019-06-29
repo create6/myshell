@@ -41,7 +41,7 @@ elif [ "$OPTION" = "4" ];then
 	echo $(date)
 
 elif [ "$OPTION" = "5" ];then
-    cd ~/Desktop/myshell/
+    cd ~/Desktop/myshell/source/
 read -p "Input filename:" Filename
    # read Filename
     touch $Filename

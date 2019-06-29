@@ -41,7 +41,7 @@ def mysentence():
     return data[0][1]
 
 #调用句子生成器
-str0=mysentence()
+str0= '来一句：' + mysentence()
 # print('str0-->%s'%str0)
 
 

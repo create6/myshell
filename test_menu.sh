@@ -11,9 +11,11 @@ echo "3:get_meiduo"
 echo "4:show date"
 echo "5:morefile"
 echo "6:git myshell"
-echo "7:mysql-->bookhero"
+echo "7:mysql-->superMarket"
 echo "8:sendmail"
 echo "9:mysql-->meiduo12"
+echo "10:login_mysql"
+echo "11:gitsome"
 echo "15:reboot"
 echo "112:shutdown"
 echo "111:T-shutdown"
@@ -53,8 +55,8 @@ echo -e "\033[36m  git push `pwd` \033[0m"
     ~/Desktop/myshell/use_git.sh
 
 elif [ "$OPTION" = "7" ];then
-    echo "mysqsl-->bookhero-->tb_books"
-    ~/Desktop/myshell/source/my_sql.sh
+    echo "mysqsl-->db:superMarket"
+    ~/Desktop/myshell/source/my_sql_superMarket.sh
 
 elif [ "$OPTION" = "8" ];then
     read -p 'Please input content:' CONTENT
@@ -67,6 +69,13 @@ elif [ "$OPTION" = "9" ];then
 #    use meiduo12;
 #    show tables;
 #    EOF
+
+elif [ "$OPTION" = "10" ];then
+    mysql -uroot -pmysql
+
+elif [ "$OPTION" = "11" ];then
+    cd ~/Desktop/gitsome/
+    gitsome
 
 elif [ "$OPTION" = "15" ];then
     sudo reboot

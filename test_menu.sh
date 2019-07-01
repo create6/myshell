@@ -16,10 +16,11 @@ echo "8:sendmail"
 echo "9:mysql-->meiduo12"
 echo "10:login_mysql"
 echo "11:gitsome"
+echo "12:workon django_py3"
 echo "15:reboot"
-echo "112:shutdown"
-echo "111:T-shutdown"
 echo "99:edit it"
+echo "111:T-shutdown"
+echo "112:shutdown"
 echo "0:exit"
 
 
@@ -76,6 +77,9 @@ elif [ "$OPTION" = "10" ];then
 elif [ "$OPTION" = "11" ];then
     cd ~/Desktop/gitsome/
     gitsome
+
+elif [ "$OPTION" = "12" ];then
+    workon django_py3
 
 elif [ "$OPTION" = "15" ];then
     sudo reboot

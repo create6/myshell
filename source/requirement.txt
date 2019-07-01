@@ -30,8 +30,6 @@ fdfs-client-py==1.2.6
 feedparser==5.2.1
 filelock==3.0.12
 flake8==3.7.7
-gitchangelog==3.0.4
--e git+https://github.com/donnemartin/gitsome.git@d7c57abc7cb66e9c910a844f15d4536866da3310#egg=gitsome
 idna==2.8
 imagesize==1.1.0
 importlib-metadata==0.18
@@ -49,7 +47,7 @@ packaging==16.8
 pathlib2==2.3.4
 pexpect==4.7.0
 Pillow==6.0.0
-pkg-resources==0.0.0
+#pkg-resources==0.0.0
 pluggy==0.12.0
 ply==3.11
 prompt-toolkit==2.0.9

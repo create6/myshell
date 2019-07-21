@@ -1,176 +1,199 @@
-shell编程
-shell历史
-Shell的作用是解释执行用户的命令，用户输入一条命令，Shell就解释执行一条，这种方式称为交互式（Interactive），Shell还有一种执行命令的方式称为批处理（Batch），用户事先写一个Shell脚本（Script），其中有很多条命令，让Shell一次把这些命令执行完，而不必一条一条地敲命令。Shell脚本和编程语言很相似，也有变量和流程控制语句，但Shell脚本是解释执行的，不需要编译，Shell程序从脚本中一行一行读取并执行这些命令，相当于一个用户把脚本中的命令一行一行敲到Shell提示符下执行。
-
-由于历史原因，UNIX系统上有很多种Shell：
-
-1.sh（Bourne Shell）：由Steve Bourne开发，各种UNIX系统都配有sh。
-
-2.csh（C Shell）：由Bill Joy开发，随BSD UNIX发布，它的流程控制语句很像C语言，支持很多Bourne Shell所不支持的功能：作业控制，命令历史，命令行编辑。
-
-3.ksh（Korn Shell）：由David Korn开发，向后兼容sh的功能，并且添加了csh引入的新功能，是目前很多UNIX系统标准配置的Shell，在这些系统上/bin/sh往往是指向/bin/ksh的符号链接。
-
-4.tcsh（TENEX C Shell）：是csh的增强版本，引入了命令补全等功能，在FreeBSD、Mac OS X等系统上替代了csh。
-
-5.bash（Bourne Again Shell）：由GNU开发的Shell，主要目标是与POSIX标准保持一致，同时兼顾对sh的兼容，bash从csh和ksh借鉴了很多功能，是各种Linux发行版标准配置的Shell，在Linux系统上/bin/sh往往是指向/bin/bash的符号链接。虽然如此，bash和sh还是有很多不同的，一方面，bash扩展了一些命令和参数，另一方面，bash并不完全和sh兼容，有些行为并不一致，所以bash需要模拟sh的行为：当我们通过sh这个程序名启动bash时，bash可以假装自己是sh，不认扩展的命令，并且行为与sh保持一致。
-
-6.zsh 的命令补全功能非常强大，可以补齐路径，补齐命令，补齐参数等。
-
-vim /etc/passwd
-其中最后一列显示了用户对应的shell类型
-
-root:x:0:0:root:/root:/bin/bash
-nobody:x:65534:65534:nobody:/nonexistent:/bin/sh
-syslog:x:101:103::/home/syslog:/bin/false
-itcast:x:1000:1000:itcast,,,:/home/itcast:/bin/bash
-ftp:x:115:125:ftp daemon,,,:/srv/ftp:/bin/false
-用户在命令行输入命令后，一般情况下Shell会fork并exec该命令，但是Shell的内建命令例外，执行内建命令相当于调用Shell进程中的一个函数，并不创建新的进程。以前学过的cd、alias、umask、exit等命令即是内建命令，凡是用which命令查不到程序文件所在位置的命令都是内建命令，内建命令没有单独的man手册，要在man手册中查看内建命令，应该
-
-$ man bash-builtins
-如export、shift、if、eval、[、for、while等等。内建命令虽然不创建新的进程，但也会有Exit Status，通常也用0表示成功非零表示失败，虽然内建命令不创建新的进程，但执行结束后也会有一个状态码，也可以用特殊变量$?读出。
-
-执行脚本
-编写一个简单的脚本test.sh：
-
-#! /bin/sh
-cd ..
-ls
-Shell脚本中用#表示注释，相当于C语言的//注释。但如果#位于第一行开头，并且是#!（称为Shebang）则例外，它表示该脚本使用后面指定的解释器/bin/sh解释执行。如果把这个脚本文件加上可执行权限然后执行：
-
-chmod a+x test.sh
-./test.sh
-Shell会fork一个子进程并调用exec执行./test.sh这个程序，exec系统调用应该把子进程的代码段替换成./test.sh程序的代码段，并从它的_start开始执行。然而test.sh是个文本文件，根本没有代码段和_start函数，怎么办呢？其实exec还有另外一种机制，如果要执行的是一个文本文件，并且第一行用Shebang指定了解释器，则用解释器程序的代码段替换当前进程，并且从解释器的_start开始执行，而这个文本文件被当作命令行参数传给解释器。因此，执行上述脚本相当于执行程序
-
-$ /bin/sh ./test.sh
-以这种方式执行不需要test.sh文件具有可执行权限。
-
-如果将命令行下输入的命令用()括号括起来，那么也会fork出一个子Shell执行小括号中的命令，一行中可以输入由分号;隔开的多个命令，比如：
-
-$ (cd ..;ls -l)
-和上面两种方法执行Shell脚本的效果是相同的，cd ..命令改变的是子Shell的PWD，而不会影响到交互式Shell。然而命令
-
-$ cd ..;ls -l
-则有不同的效果，cd ..命令是直接在交互式Shell下执行的，改变交互式Shell的PWD，然而这种方式相当于这样执行Shell脚本：
-
-$ source ./test.sh
-或者
-
-$ . ./test.sh
-source或者.命令是Shell的内建命令，这种方式也不会创建子Shell，而是直接在交互式Shell下逐行执行脚本中的命令。
-
-基本语法
-变量
-按照惯例，Shell变量由全大写字母加下划线组成，有两种类型的Shell变量：
-
-1.环境变量
-
-环境变量可以从父进程传给子进程，因此Shell进程的环境变量可以从当前Shell进程传给fork出来的子进程。用printenv命令可以显示当前Shell进程的环境变量。
-
-2.本地变量
-
-只存在于当前Shell进程，用set命令可以显示当前Shell进程中定义的所有变量（包括本地变量和环境变量）和函数。
-
-环境变量是任何进程都有的概念，而本地变量是Shell特有的概念。在Shell中，环境变量和本地变量的定义和用法相似。在Shell中定义或赋值一个变量：
-
-itcast$ VARNAME=value
-注意等号两边都不能有空格，否则会被Shell解释成命令和命令行参数。
-
-一个变量定义后仅存在于当前Shell进程，它是本地变量，用export命令可以把本地变量导出为环境变量，定义和导出环境变量通常可以一步完成：
-
-itcast$ export VARNAME=value
-也可以分两步完成：
-
-itcast$ VARNAME=value
-itcast$ export VARNAME
-用unset命令可以删除已定义的环境变量或本地变量。
-
-itcast$ unset VARNAME
-如果一个变量叫做VARNAME，用${VARNAME}可以表示它的值，在不引起歧义的情况下也可以用$VARNAME表示它的值。通过以下例子比较这两种表示法的不同：
-
-itcast$ echo $SHELL
-注意，在定义变量时不用$，取变量值时要用$。和C语言不同的是，Shell变量不需要明确定义类型，事实上Shell变量的值都是字符串，比如我们定义VAR=45，其实VAR的值是字符串45而非整数。Shell变量不需要先定义后使用，如果对一个没有定义的变量取值，则值为空字符串。
-
-文件名代换（Globbing）：* ? []
-这些用于匹配的字符称为通配符（Wildcard），具体如下：
-
-通配符
-
-*   匹配0个或多个任意字符
-?   匹配一个任意字符
-[若干字符]  匹配方括号中任意一个字符的一次出现
-
-$ ls /dev/ttyS*
-$ ls ch0?.doc
-$ ls ch0[0-2].doc
-$ ls ch[012]   [0-9].doc
-注意，Globbing所匹配的文件名是由Shell展开的，也就是说在参数还没传给程序之前已经展开了，比如上述ls ch0[012].doc命令，如果当前目录下有ch00.doc和ch02.doc，则传给ls命令的参数实际上是这两个文件名，而不是一个匹配字符串。
-
-命令代换：`或 $()
-    由'`'反引号括起来的也是一条命令，Shell先执行该命令，然后将输出结果立刻代换到当前命令行中。例如定义一个变量存放date命令的输出：
-
-    itcast$ DATE=`date`
-    itcast$ echo $DATE
-    命令代换也可以用$()表示：
-
-    itcast$ DATE=$(date)
-    算术代换：$(())
-    用于算术计算，$(())中的Shell变量取值将转换成整数，同样含义的$[]等价例如：
-
-    itcast$ VAR=45
-    itcast$ echo $(($VAR+3))
-    $(())中只能用+-*/和()运算符，并且只能做整数运算。
-
-    $[base#n],其中base表示进制,n按照base进制解释，后面再有运算数，按十进制解释。
-
-    echo $[2#10+11]
-    echo $[8#10+11]
-    echo $[10#10+11]
-    转义字符\
-        和C语言类似，\在Shell中被用作转义字符，用于去除紧跟其后的单个字符的特殊意义（回车除外），换句话说，紧跟其后的字符取字面值。例如：
-
-        itcast$ echo $SHELL
-        /bin/bash
-        itcast$ echo \$SHELL
-        $SHELL
-        itcast$ echo \\
-            \
-            比如创建一个文件名为“$ $”的文件可以这样：
-
-            itcast$ touch \$\ \$
-            还有一个字符虽然不具有特殊含义，但是要用它做文件名也很麻烦，就是-号。如果要创建一个文件名以-号开头的文件，这样是不行的：
-
-            itcast$ touch -hello
-            touch: invalid option -- h
-            Try `touch --help' for more information.
-
-            即使加上\转义也还是报错：
-
-            itcast$ touch \-hello
-            touch: invalid option -- h
-            Try `touch --help' for more information.
-            因为各种UNIX命令都把-号开头的命令行参数当作命令的选项，而不会当作文件名。如果非要处理以-号开头的文件名，可以有两种办法：
-
-            itcast$ touch ./-hello
-            或者
-
-            itcast$ touch -- -hello
-            \还有一种用法，在\后敲回车表示续行，Shell并不会立刻执行命令，而是把光标移到下一行，给出一个续行提示符>，等待用户继续输入，最后把所有的续行接到一起当作一个命令执行。例如：
-
-            itcast$ ls \
-                > -l
-                （ls -l命令的输出）
-                单引号
-                和C语言不一样，Shell脚本中的单引号和双引号一样都是字符串的界定符（双引号下一节介绍），而不是字符的界定符。单引号用于保持引号内所有字符的字面值，即使引号内的\和回车也不例外，但是字符串中不能出现单引号。如果引号没有配对就输入回车，Shell会给出续行提示符，要求用户把引号配上对。例如：
-
-                itcast$ echo '$SHELL'
-                $SHELL
-                itcast$ echo 'ABC\（回车）
-                > DE'（再按一次回车结束命令）
-                ABC\
-                    DE
-                    双引号
-                    被双引号用括住的内容，将被视为单一字串。它防止通配符扩展，但允许变量扩展。这点与单引号的处理方式不同
-
-                    itcast$ DATE=$(date)
-    itcast$ echo "$DATE"
-    itcast$ echo '$DATE'
+    Linux 常用命令
+    
+    一、文件操作
+    1.1 创建和删除文件
+    功能	命令	解释
+    创建普通文件	touch filename	
+    创建目录	mkdir -p dirname	指定-p选项可以创建多级目录
+    删除空目录	rmdir dirname	只能删除空目录
+    删除文件和目录	rm -rf name	将会递归删除文件，不会放入回收站
+    1.2 查看文本文件内容
+    功能	命令	解释
+    查看整个文件	cat -n filename	指定-n添加行号
+    查看整个文件	less -N filename	指定-N添加行号，一点一点查看
+    查看部分文件	head -n 20 filename	查看前面20行，默认前10行
+    查看部分文件	tail -n 20 filename	查看尾部20行，默认后10行
+    1.3 查看文件状态
+    功能	命令	解释
+    查看目录状态	ls -dl dirname	指定-d查看目录信息，而不是里面的文件
+    以大小可读的形式查看目录中的文件	ls -lh dirname	
+    查看文件属性	file filename	可以查看文件编码
+    查看文件所有信息	stat filename	
+    1.4 编辑文件
+    功能	命令	解释
+    使用vim编辑器	vi filename	使用命令行编辑
+    使用gedit编辑器	gedit filename	使用GUI界面编辑
+    使用sed编辑器	sed ‘s/gzx/Tom/g’ /etc/passwd	将每行的gzx全部换成Tom
+    使用awk编辑器	awk -F : ‘{print $1}’ /etc/passwd	指定分隔符，输出用户名
+    1.5 文件处理
+    功能	命令	解释
+    文件行排序	sort -t ‘:’ -k 7 /etc/passwd	使用:分割，第7行排序
+    文件行查找	grep -n ‘^gzx’ /etc/passwd	使用正则表达式查找，且标出行号
+    1.6 查找文件
+    功能	命令	解释
+    利用文件名定位文件	locate hello	从整个目录树查找含有hello的文件或目录
+    查找特定文件	find ~ -type f -name hello.txt	从用户的HOME目录下查找文件名为hello.txt的文件
+    1.7 文件打包和压缩
+    功能	命令	解释
+    打包并压缩成gzip格式	tar cvfz all.tgz *	将当前目录下的所有文件压缩到all.tgz
+    解压缩gzip格式	tar -C test -zxvf all.tgz	将压缩包解压到test目录下，第二个-不能省
+    打包并压缩成bzip2格式	tar cvfj all_bzip2.tbz *	压缩比大，速度慢
+    解压缩bzip2格式	tar -C test -jxvf all_bzip2.tbz	同上
+    打包并压缩成tar.xz格式	tar cvfJ all.tar.xz *	大写的J
+    解压缩xz格式	tar -C test -Jxvf all.tar.xz	
+    
+    
+    二、设备操作
+    功能	命令	解释
+    查看设备的分区表	sudo fdisk -l /dev/sda	使用超级权限，列出分区信息
+    给U盘分区	sudo fdisk /dev/sdb	一开始在内存里操作，直到输入w命令，分区之前应当卸载该设备上的文件系统
+    给分区安装文件系统	sudo mkfs -t ext4 /dev/sda1	给第一块硬盘的第一个分区安装ext4文件系统
+    挂载文件系统	sudo mount -t ext4 /dev/sdb1 /media	挂载设备/dev/sda1到/media，同时指定设备的文件系统为ext4
+    挂载文件系统	sudo mount -t iso9660 -o loop image.iso /mnt/iso_image	挂载镜像文件image.iso1到/mnt/iso_image，挂载文件要加-o选项
+    卸载文件系统	sudo umount /dev/sba1[/media]	卸载文件系统，可以指定设备名或挂载点
+    拷贝设备	sudo dd if=/dev/sda of=bootsect.bin bs=512 count=1	拷贝sda的第一个扇区，其中bs表示block size，每次拷贝的大小，而count表示拷贝多少次
+    列出当前系统的各种文件系统	df -h	
+    列出当前目录下各个文件占用的空间大小	du -sh *	-s表示统计当前文件，而不进入子目录
+    列出系统挂载点	mount	
+    
+    三、用户管理
+    3.1 增删用户
+    功能	命令	解释
+    创建用户	sudo useradd -m Jession	创建Jession，同时创建HOME目录，还必须用passwd设置密码。没有sudo权限
+    设置用户密码	sudo passwd Jession	普通用户只能设置自己的密码，超级用户能设置他人的密码
+    删除用户	sudo userdel -r Jession	同时删除其HOME目录
+    切换到超级用户	su	当前目录不变，输入root的密码
+    切换到超级用户	su -	运行root的Login Shell，并切换到/root
+    使用超级用户权限	sudo 命令	当前用户必须是sudoer。输入的是当前用户的密码，创建的文件是root，更加安全
+    
+    3.2 修改文件属性
+    功能	命令	解释
+    修改权限	chmod -x note.txt	全部去掉执行权限，有u(用户),g(组),o(其他),a(所有)四种
+    修改权限	chmod 664 note.txt	八进制的形式
+    修改属主	sudo chmod Jessin note.txt	更改属主
+    修改属主	sudo chmod Jessin: note.txt	更改属主并修改为Jessin属组
+    修改属主和属组	sudo chmod Jessin:Jessin note.txt	
+    修改属组	sudo chgrp Jessin note.txt	可以用chown替换
+    查看创建文件的默认权限	umask	
+    修改创建的文件的属性	umask 022	去掉属组和其他用户的写权限
+    
+    
+    四、软件安装
+    4.1 从库安装
+    功能	命令	解释
+    更新软件库	sudo apt-get update	源位于文件/etc/apt/sources.list
+    升级已安装的软件	sudo apt-get upgrade	一般要先运行上一个命令
+    安装软件	sudo apt-get install pkt_name	包名不包括版本号，包含包文件，由库源完成映射
+    删除软件	sudo apt-get remove pkt_name	不会删除配置文件
+    删除软件	sudo apt-get purge pkt_name	会删除配置文件
+    智能删除软件	sudo apt-get autoremove	移除安装某软件包时需要的依赖包
+    清除本地仓库的所有包文件	sudo apt-get clean	主要是/var/cache/apt/archives/ 和/var/cache/apt/archives/partial/
+    智能清除本地仓库的包文件	sudo apt-get autoclean	
+    查找文件所在的包	dpkg -S filename	
+    查找文件所在的包	apt-file search filename	一般要先运行apt-file update
+    解决依赖破损	sudo apt-get -f install	-f表示–fix-broken
+    查看软件的安装状态	dpkg –status pkt_name	可以查看软件是否已经安装
+    添加库源	sudo add-apt-repository ppa:fcitx-team/nightly	
+    删除库源	sudo add-apt-repository –remove ppa:fcitx-team/nightly	
+    
+    4.2 手动安装
+    功能	命令	解释
+    生成Makefile	./configure	可以指定安装的目录–prefix
+    编译	make	
+    将命令安装到特定目录	sudo make install	
+    
+    五、进程管理
+    功能	命令	解释
+    列举当前系统的所有进程	ps aux	BSD风格
+    列举当前系统的所有进程	ps -ef	UNIX风格，字段与上面存在不同
+    动态刷新进程列表	top	
+    查看所有任务	jobs	
+    将进程放置到后台运行	命令 &	
+    将进程放置到后台运行	bg %1	1表示第一个任务号
+    将进程放置到前台运行	fg %1	1表示第一个任务号
+    列出系统支持的信号	kill -l	
+    给进程发送信号	kill -signum[-signame] pid	必须存在亲属关系或者是超级用户。默认发送SIGTERM
+    查看进程树	pstree
+    	
+    六、网络管理
+    功能	命令	解释
+    查看IP	ifconfig	
+    检查网络是否连通	ping IP	发送ICMP echo回显请求
+    检查网络路由拓扑	traceroute	发送ICMP echo回显请求，TTL从一开始不断加加
+    查看网络连接状态	netstat	可以看TCP状态
+    查看本地路由表	netstat -r	
+    发起http请求	curl	
+    抓取网络数据包	tcpdump	
+    查看arp缓存	arp	可以添加或删除arp表项
+    查看打开的端口、运行的服务	sudo lsof -i :22,3306	冒号不能省，后面跟逗号列表。部分服务需要超级权限
+    查看打开的端口、运行的服务	netstat -ntl	-n表示服务的端口，而不是输出服务名，-t表示输出tcp，-l表示监听的端口，不指定这个选项将输出当前的tcp连接
+    非交互式下载	wget -c URL	指定-c表示继续下载
+    使用ftp服务	ftp ftp_server	通常有一个匿名用户anonymous，无密码
+    上传或下载远程文件	scp filename gzx@192.168.1.100:Share	上传文件filename到gzx用户目录的Share目录下。在100 IP上必须有一个gzx用户
+    远程登录	ssh gzx@192.168.1.100	100 IP必须运行sshd服务
+    
+    七、其他命令
+    功能	命令	解释
+    执行历史记录的某条命令	!number	通过history命令得到number，但执行环境必须相同
+    画图工具	dot -Tpng -o test.png test.dot	生成dot图，其中-T为输出格式，-o为输出的文件名，test.dot为输入的脚本
+    打开网页等各种格式的文件	xdg-open http://www.baidu.com	在浏览器中打开一个新的界面
+    打开图片	xdg-open test.png	自动调用默认的程序
+    将上一个命令的结果格式化给另一个命令	cat hello.txt | xargs -I {} mv {} /tmp/	默认情况下会将参数以空白放到命令的最后，参数最多可以达到系统的上限，然后执行下一次命令。如果参数要放到中间，则必须用-I制定占位符，从而将结果放到中间
+    
+    
+    ========================================
+    flask 用6001端口无法访问
+     工程师 63828 号 :    您好：您使用sudo ufw status查看系统防火墙状态是否开启；如果开启关闭下防火墙试试；如果关闭使用iptables -F清除下防火墙规则后再访问谢谢  
+    
+    iptables -F ：慎用
+    ========================================
+    
+    flask 远程调试中-Address already in use
+    
+    答：端口已被占用
+    netstat  -anptu  |  grep   5000
+    kill -9 pid
+    （产生原因，本地断网，重新调试时端口被占用）
+    
+    ========================================
+    nginx
+    检查: netstat -tnulp | grep nginx
+    
+    启动: systemctl start nginx
+    停止: systemctl stop nginx
+    
+    ------新用阿里服务器----------------
+     Unable to locate package git
+    答：apt-get update
+    
+    ========================================
+    启动,停止docker服务
+    启动
+    sudo service docker start
+    停止
+    sudo service docker stop
+    启动docker
+    sudo service docker restart
+    状态检查
+    sudo service docker status
+    ========================================
+    service --status-all
+    + 表示服务正在运行，- 表示服务已停止。您可以通过为+和-服务运行service SERVICENAME status来查看此信息。
+    某些服务由Upstart管理。您可以使用sudo initctl list检查所有Upstart服务的状态。由Upstart管理的任何服务也将显示在service --status-all提供的列表中，但将标记为?。
+    参考：man service
+    
+    抓取网络数据包	tcpdump	
+    查看进程树	pstree
+    列举当前系统的所有进程	ps -ef
+    动态刷新进程列表	top
+    
+    
+    ========================================
+    #显示两层
+    tree -L 2 
+    ======================
+    netstat -pan 查看当前开放的端口
+    ======================
+    
+    
+    
